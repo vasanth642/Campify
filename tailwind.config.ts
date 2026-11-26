@@ -8,18 +8,23 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+      },
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-        border: "var(--border)",
-        brand: {
-          50: "#eff6ff",
-          100: "#dbeafe",
-          500: "#3b82f6",
-          600: "#2563eb",
-          700: "#1d4ed8",
-          800: "#1e40af",
-          900: "#1e3a8a",
+        surface: {
+          DEFAULT: "#09090b",
+          raised: "#18181b",
+          subtle: "#0f0f12",
+          overlay: "rgba(255, 255, 255, 0.04)",
+        },
+        accent: {
+          DEFAULT: "#7877c6",
+          bright: "#8b8adf",
+        },
+        muted: {
+          DEFAULT: "#a1a1aa",
+          dark: "#71717a",
         },
       },
     },
@@ -28,4 +33,3 @@ const config: Config = {
 };
 
 export default config;
-

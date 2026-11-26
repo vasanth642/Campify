@@ -1,54 +1,46 @@
 import Link from "next/link";
-import { Compass, MessageSquare, Search, MapPin, User, LogIn } from "lucide-react";
+import { MessageCircle, Search, MapPin, Zap } from "lucide-react";
 
 export function Navbar() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-zinc-200 bg-white/95 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/95">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 w-full border-b border-white/[0.06] bg-zinc-950/70 backdrop-blur-md">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2.5 font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white shadow-sm">
-              <Compass className="h-4 w-4" />
-            </div>
-            <span className="text-lg">CampusAssist</span>
+          <Link href="/" className="flex items-center gap-2">
+            <Zap className="h-[18px] w-[18px] text-accent-bright" strokeWidth={2.5} />
+            <span className="text-[15px] font-semibold tracking-tight text-white">
+              Campify
+            </span>
           </Link>
 
-          <nav className="hidden items-center gap-6 text-sm font-medium text-zinc-600 md:flex dark:text-zinc-400">
-            <Link
-              href="/feed"
-              className="flex items-center gap-1.5 transition-colors hover:text-zinc-900 dark:hover:text-zinc-50"
-            >
-              <MessageSquare className="h-4 w-4" />
-              Feed
-            </Link>
-            <Link
-              href="/search"
-              className="flex items-center gap-1.5 transition-colors hover:text-zinc-900 dark:hover:text-zinc-50"
-            >
-              <Search className="h-4 w-4" />
-              Explore
-            </Link>
-            <Link
-              href="/map"
-              className="flex items-center gap-1.5 transition-colors hover:text-zinc-900 dark:hover:text-zinc-50"
-            >
-              <MapPin className="h-4 w-4" />
-              Campus Map
-            </Link>
+          <nav className="hidden items-center gap-1 md:flex">
+            {[
+              { href: "/feed", label: "Feed", icon: MessageCircle },
+              { href: "/search", label: "Explore", icon: Search },
+              { href: "/map", label: "Map", icon: MapPin },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[13px] font-medium text-zinc-400 transition-colors hover:text-zinc-100"
+              >
+                <item.icon className="h-3.5 w-3.5" />
+                {item.label}
+              </Link>
+            ))}
           </nav>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <Link
             href="/login"
-            className="flex items-center gap-1.5 rounded-lg border border-zinc-300 px-3.5 py-1.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-900"
+            className="rounded-full px-4 py-1.5 text-[13px] font-medium text-zinc-400 transition-colors hover:text-white"
           >
-            <LogIn className="h-4 w-4" />
-            Sign In
+            Log in
           </Link>
           <Link
             href="/signup"
-            className="rounded-lg bg-zinc-900 px-3.5 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            className="rounded-full bg-white px-4 py-1.5 text-[13px] font-medium text-zinc-950 shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-colors hover:bg-zinc-200"
           >
             Get Started
           </Link>
@@ -57,4 +49,3 @@ export function Navbar() {
     </header>
   );
 }
-
