@@ -26,6 +26,7 @@ const initialColleges = [
   { name: "Delhi Technological University", city: "New Delhi", state: "Delhi" },
   { name: "SRM Institute of Science and Technology", city: "Chennai", state: "Tamil Nadu" },
   { name: "Anna University", city: "Chennai", state: "Tamil Nadu" },
+  { name: "Vel Tech High Tech Dr.Rangarajan Dr.Sakunthala Engineering College", city: "Chennai", state: "Tamil Nadu" },
 ];
 
 async function seed() {

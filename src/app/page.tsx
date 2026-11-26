@@ -23,6 +23,10 @@ import {
   ChevronRight,
   Radio,
   Share2,
+  UserPlus,
+  Check,
+  Award,
+  Shield,
 } from "lucide-react";
 
 const stagger = {
@@ -41,60 +45,170 @@ const fadeUp: Variants = {
   },
 };
 
-const heroPosts = [
-  {
-    icon: BookOpen,
-    category: "Academics",
-    title: "Anyone taking the ML elective next semester?",
-    author: "Vasanth",
-    initial: "V",
-    college: "NIT Trichy",
-    time: "2m ago",
-    upvotes: 24,
-    discussions: 8,
-    color: "text-blue-400",
-    bg: "bg-blue-500/10",
-  },
-  {
-    icon: HandHelping,
-    category: "Help Wanted",
-    title: "Lost my ID card near the central library",
-    author: "Priya",
-    initial: "P",
-    college: "IIT Bombay",
-    time: "5m ago",
-    upvotes: 42,
-    discussions: 15,
-    color: "text-amber-400",
-    bg: "bg-amber-500/10",
-  },
-  {
-    icon: Users,
-    category: "Events",
-    title: "Hackathon team needed: 3 spots open",
-    author: "Arjun",
-    initial: "A",
-    college: "BITS Pilani",
-    time: "12m ago",
-    upvotes: 67,
-    discussions: 23,
-    color: "text-emerald-400",
-    bg: "bg-emerald-500/10",
-  },
-  {
-    icon: TrendingUp,
-    category: "Career",
-    title: "Google SWE internship timeline and tips",
-    author: "Meera",
-    initial: "M",
-    college: "IIT Madras",
-    time: "1h ago",
-    upvotes: 156,
-    discussions: 41,
-    color: "text-violet-400",
-    bg: "bg-violet-500/10",
-  },
-];
+const heroPostsByTab = {
+  my_college: [
+    {
+      icon: BookOpen,
+      category: "Academics",
+      title: "Anyone taking the ML elective next semester?",
+      author: "Vasanth",
+      initial: "V",
+      college: "NIT Trichy",
+      time: "2m ago",
+      upvotes: 24,
+      discussions: 8,
+      color: "text-blue-400",
+      bg: "bg-blue-500/10",
+    },
+    {
+      icon: HandHelping,
+      category: "Hostel",
+      title: "Hostel B Mess Menu: New caterer feedback thread",
+      author: "Kavya",
+      initial: "K",
+      college: "NIT Trichy",
+      time: "15m ago",
+      upvotes: 34,
+      discussions: 6,
+      color: "text-amber-400",
+      bg: "bg-amber-500/10",
+    },
+    {
+      icon: Users,
+      category: "Events",
+      title: "Pragyan Robotics Workshop: registrations open",
+      author: "Dinesh",
+      initial: "D",
+      college: "NIT Trichy",
+      time: "45m ago",
+      upvotes: 48,
+      discussions: 12,
+      color: "text-emerald-400",
+      bg: "bg-emerald-500/10",
+    },
+    {
+      icon: BookOpen,
+      category: "Academics",
+      title: "Operating Systems mid-term question paper discussion",
+      author: "Arun",
+      initial: "A",
+      college: "NIT Trichy",
+      time: "2h ago",
+      upvotes: 52,
+      discussions: 18,
+      color: "text-blue-400",
+      bg: "bg-blue-500/10",
+    },
+  ],
+  nationwide: [
+    {
+      icon: TrendingUp,
+      category: "Career",
+      title: "Google SWE internship timeline and interview tips",
+      author: "Meera",
+      initial: "M",
+      college: "IIT Madras",
+      time: "1h ago",
+      upvotes: 156,
+      discussions: 41,
+      color: "text-violet-400",
+      bg: "bg-violet-500/10",
+    },
+    {
+      icon: Users,
+      category: "Events",
+      title: "Smart India Hackathon 2026: 3 spots open for AI team",
+      author: "Arjun",
+      initial: "A",
+      college: "BITS Pilani",
+      time: "12m ago",
+      upvotes: 67,
+      discussions: 23,
+      color: "text-emerald-400",
+      bg: "bg-emerald-500/10",
+    },
+    {
+      icon: BookOpen,
+      category: "Academics",
+      title: "Open-source compiler research group: weekly meetups",
+      author: "Rohan",
+      initial: "R",
+      college: "IIT Bombay",
+      time: "3h ago",
+      upvotes: 84,
+      discussions: 14,
+      color: "text-blue-400",
+      bg: "bg-blue-500/10",
+    },
+    {
+      icon: TrendingUp,
+      category: "Career",
+      title: "Summer 2026 Off-Campus Referral sheet curated by seniors",
+      author: "Siddharth",
+      initial: "S",
+      college: "Vel Tech",
+      time: "4h ago",
+      upvotes: 112,
+      discussions: 29,
+      color: "text-violet-400",
+      bg: "bg-violet-500/10",
+    },
+  ],
+  help_wanted: [
+    {
+      icon: HandHelping,
+      category: "Help Wanted",
+      title: "Lost my ID card near the central library (CS Senior)",
+      author: "Priya",
+      initial: "P",
+      college: "IIT Bombay",
+      time: "5m ago",
+      upvotes: 42,
+      discussions: 15,
+      color: "text-amber-400",
+      bg: "bg-amber-500/10",
+    },
+    {
+      icon: HandHelping,
+      category: "Help Wanted",
+      title: "Need textbook PDF for Distributed Systems (Coulouris 5th ed)",
+      author: "Naveen",
+      initial: "N",
+      college: "Vel Tech",
+      time: "30m ago",
+      upvotes: 19,
+      discussions: 7,
+      color: "text-amber-400",
+      bg: "bg-amber-500/10",
+    },
+    {
+      icon: HandHelping,
+      category: "Help Wanted",
+      title: "Seeking senior mentor for GSOC proposal review in WebRTC",
+      author: "Ananya",
+      initial: "A",
+      college: "Anna Univ",
+      time: "1h ago",
+      upvotes: 38,
+      discussions: 11,
+      color: "text-amber-400",
+      bg: "bg-amber-500/10",
+    },
+    {
+      icon: HandHelping,
+      category: "Help Wanted",
+      title: "Accommodation advice for Bangalore internship near Electronic City",
+      author: "Vignesh",
+      initial: "V",
+      college: "NIT Trichy",
+      time: "3h ago",
+      upvotes: 27,
+      discussions: 16,
+      color: "text-amber-400",
+      bg: "bg-amber-500/10",
+    },
+  ],
+};
 
 const collegesList = [
   "IIT Bombay",
@@ -102,6 +216,7 @@ const collegesList = [
   "IIIT Hyderabad",
   "BITS Pilani",
   "IIT Madras",
+  "Vel Tech",
   "VIT Vellore",
   "DTU Delhi",
   "SRM Chennai",
@@ -133,6 +248,7 @@ const howItWorksSteps = [
 
 export default function HomePage() {
   const [activeStep, setActiveStep] = useState(0);
+  const [heroTab, setHeroTab] = useState<"my_college" | "nationwide" | "help_wanted">("my_college");
   const [isInView, setIsInView] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const howItWorksRef = useRef<HTMLElement>(null);
@@ -271,9 +387,9 @@ export default function HomePage() {
               {/* Title bar */}
               <div className="flex items-center gap-2 border-b border-white/[0.06] px-4 py-3">
                 <div className="flex items-center gap-1.5">
-                  <div className="h-3 w-3 rounded-full bg-zinc-700" />
-                  <div className="h-3 w-3 rounded-full bg-zinc-700" />
-                  <div className="h-3 w-3 rounded-full bg-zinc-700" />
+                  <div className="h-3 w-3 rounded-full bg-[#FF5F56]/90 border border-[#E0443E]/50 shadow-sm" />
+                  <div className="h-3 w-3 rounded-full bg-[#FFBD2E]/90 border border-[#DEA123]/50 shadow-sm" />
+                  <div className="h-3 w-3 rounded-full bg-[#27C93F]/90 border border-[#1AAB29]/50 shadow-sm" />
                 </div>
                 <div className="mx-auto flex items-center gap-2">
                   <MessageCircle className="h-3.5 w-3.5 text-zinc-500" />
@@ -285,23 +401,29 @@ export default function HomePage() {
               </div>
 
               {/* Tab bar */}
-              <div className="flex items-center gap-1 border-b border-white/[0.06] px-4 py-2">
-                {["My College", "Nationwide", "Help Wanted"].map((tab, i) => (
-                  <span
-                    key={tab}
-                    className={`rounded-md px-3 py-1 text-[12px] font-medium transition-colors ${i === 0
-                      ? "bg-white/[0.08] text-white"
-                      : "text-zinc-500 hover:text-zinc-300"
-                      }`}
+              <div className="flex items-center gap-1.5 border-b border-white/[0.06] px-4 py-2">
+                {[
+                  { key: "my_college", label: "My College" },
+                  { key: "nationwide", label: "Nationwide" },
+                  { key: "help_wanted", label: "Help Wanted" },
+                ].map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setHeroTab(tab.key as any)}
+                    className={`rounded-md px-3 py-1 text-[12px] font-medium transition-colors ${
+                      heroTab === tab.key
+                        ? "bg-white/[0.1] text-white shadow-sm"
+                        : "text-zinc-500 hover:text-zinc-300"
+                    }`}
                   >
-                    {tab}
-                  </span>
+                    {tab.label}
+                  </button>
                 ))}
               </div>
 
               {/* Post cards */}
               <div className="divide-y divide-white/[0.04]">
-                {heroPosts.map((post) => (
+                {heroPostsByTab[heroTab].map((post) => (
                   <div
                     key={post.title}
                     className="flex gap-3.5 px-5 py-4 transition-colors hover:bg-white/[0.04]"
@@ -399,13 +521,13 @@ export default function HomePage() {
                     <Building2 className="h-4 w-4" />
                   </div>
                   <div>
-                    <span className="text-xs text-zinc-500 block">Restricted Domain</span>
+                    <span className="text-xs text-zinc-500 block">Verified University Domain</span>
                     <span className="text-sm font-semibold text-white">College Hub Feed</span>
                   </div>
                 </div>
                 {/* College filter pills */}
                 <div className="hidden sm:flex items-center gap-1.5">
-                  {["NIT Trichy", "IIT Madras", "BITS Pilani"].map((name, i) => (
+                  {["NIT Trichy", "Vel Tech", "IIT Madras"].map((name, i) => (
                     <span
                       key={name}
                       className={`text-[11px] px-2.5 py-1 rounded-full border ${
@@ -420,40 +542,66 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* 2 Compact Notification Cards */}
-              <div className="mt-5 space-y-2.5">
-                <div className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-zinc-950/60 p-3.5 transition group-hover:bg-zinc-950/80">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/10 text-amber-400">
-                      <Bell className="h-3.5 w-3.5" />
+              {/* Realistic Mini Feed Posts */}
+              <div className="mt-5 space-y-3">
+                <div className="rounded-xl border border-white/[0.06] bg-zinc-950/70 p-3.5 transition group-hover:bg-zinc-950/90">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800 text-[10px] font-semibold text-zinc-300 border border-white/10">
+                        K
+                      </div>
+                      <span className="text-xs font-semibold text-zinc-200">Kavya</span>
+                      <span className="rounded-full bg-zinc-800/80 px-2 py-0.5 text-[9px] font-medium text-zinc-400">
+                        NIT Trichy
+                      </span>
                     </div>
-                    <div>
-                      <p className="text-xs font-medium text-zinc-200">
-                        Mess Menu Updated: Hostel B
-                      </p>
-                      <span className="text-[11px] text-zinc-500">Dining Council · 10m ago</span>
+                    <span className="text-[10px] text-zinc-500">10m ago</span>
+                  </div>
+                  <p className="mt-1.5 text-xs font-medium text-zinc-200">
+                    Hostel B Mess Menu: New caterer feedback thread
+                  </p>
+                  <div className="mt-2.5 flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <span className="rounded bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-[10px] font-medium text-amber-400">
+                        Hostel
+                      </span>
+                      <span className="text-[10px] text-zinc-500">Campus Only</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-[10px] text-zinc-400">
+                      <span className="inline-flex items-center gap-0.5"><ChevronUp className="h-3 w-3" /> 34</span>
+                      <span className="inline-flex items-center gap-0.5"><MessageCircle className="h-3 w-3" /> 6</span>
                     </div>
                   </div>
-                  <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                    Live
-                  </span>
                 </div>
 
-                <div className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-zinc-950/60 p-3.5 transition group-hover:bg-zinc-950/80">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400">
-                      <Sparkles className="h-3.5 w-3.5" />
+                <div className="rounded-xl border border-white/[0.06] bg-zinc-950/70 p-3.5 transition group-hover:bg-zinc-950/90">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800 text-[10px] font-semibold text-zinc-300 border border-white/10">
+                        V
+                      </div>
+                      <span className="text-xs font-semibold text-zinc-200">Vasanth</span>
+                      <span className="rounded-full bg-zinc-800/80 px-2 py-0.5 text-[9px] font-medium text-zinc-400">
+                        NIT Trichy
+                      </span>
                     </div>
-                    <div>
-                      <p className="text-xs font-medium text-zinc-200">
-                        Robotics Club Auditions: 5 PM
-                      </p>
-                      <span className="text-[11px] text-zinc-500">Tech Council · Central Workshop</span>
+                    <span className="text-[10px] text-zinc-500">25m ago</span>
+                  </div>
+                  <p className="mt-1.5 text-xs font-medium text-zinc-200">
+                    Machine Learning (CS401) syllabus & notes drive
+                  </p>
+                  <div className="mt-2.5 flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <span className="rounded bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[10px] font-medium text-blue-400">
+                        Academics
+                      </span>
+                      <span className="text-[10px] text-zinc-500">Campus Only</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-[10px] text-zinc-400">
+                      <span className="inline-flex items-center gap-0.5"><ChevronUp className="h-3 w-3" /> 28</span>
+                      <span className="inline-flex items-center gap-0.5"><MessageCircle className="h-3 w-3" /> 9</span>
                     </div>
                   </div>
-                  <span className="text-[10px] font-semibold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
-                    Today
-                  </span>
                 </div>
               </div>
             </div>
@@ -461,43 +609,46 @@ export default function HomePage() {
             <div className="mt-6 pt-4 border-t border-white/[0.06]">
               <h3 className="text-lg font-semibold text-white">College Hubs</h3>
               <p className="text-sm text-zinc-400 mt-1">
-                Private, authenticated feeds scoped strictly to your university for verified campus notices and updates.
+                Private, authenticated feeds scoped strictly to your university for verified campus notices and academic discussions.
               </p>
             </div>
           </div>
 
-          {/* Card 2: Reputation Tiers (Span 2) */}
+          {/* Card 2: Campus Reps & Badges (Span 2) */}
           <div className="md:col-span-2 rounded-2xl border border-white/10 bg-zinc-900/50 p-6 sm:p-7 hover:border-white/25 transition group flex flex-col justify-between">
             <div>
-              {/* Mini Karma Counter */}
+              {/* Rep Header */}
               <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
                 <div className="flex items-center gap-2">
                   <Trophy className="h-4 w-4 text-amber-400" />
-                  <span className="text-xs font-medium text-zinc-400">Reputation</span>
+                  <span className="text-xs font-medium text-zinc-400">Campus Reps</span>
                 </div>
                 <div className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 text-[11px] font-semibold text-amber-300">
                   <TrendingUp className="h-3 w-3" />
-                  <span>+148 Karma</span>
+                  <span>+280 Reps Earned</span>
                 </div>
               </div>
 
-              {/* Tier Ladder */}
+              {/* Tier Hierarchy */}
               <div className="mt-4 space-y-2">
                 {[
-                  { name: "Legend", color: "text-amber-300", bg: "bg-amber-400/10 border-amber-400/30", active: true },
-                  { name: "Expert", color: "text-violet-300", bg: "bg-violet-400/10 border-violet-400/20", active: false },
-                  { name: "Contributor", color: "text-blue-300", bg: "bg-blue-400/10 border-blue-400/20", active: false },
-                  { name: "Amateur", color: "text-zinc-400", bg: "bg-zinc-800/40 border-zinc-700/30", active: false },
+                  { name: "Legend", reps: "1,500+ Reps", icon: Trophy, color: "text-amber-300", bg: "bg-amber-400/10 border-amber-400/30", active: false },
+                  { name: "Expert", reps: "500+ Reps", icon: Award, color: "text-purple-300", bg: "bg-purple-400/10 border-purple-400/30", active: true },
+                  { name: "Contributor", reps: "100+ Reps", icon: Sparkles, color: "text-cyan-300", bg: "bg-cyan-400/10 border-cyan-400/20", active: false },
+                  { name: "Amateur", reps: "0+ Reps", icon: Shield, color: "text-zinc-400", bg: "bg-zinc-800/40 border-zinc-700/30", active: false },
                 ].map((tier) => (
                   <div
                     key={tier.name}
                     className={`flex items-center justify-between px-3 py-2 rounded-lg border text-xs ${tier.bg}`}
                   >
-                    <span className={`font-medium ${tier.color}`}>{tier.name}</span>
+                    <div className="flex items-center gap-2">
+                      <tier.icon className={`h-3.5 w-3.5 ${tier.color}`} />
+                      <span className={`font-semibold ${tier.color}`}>{tier.name}</span>
+                    </div>
                     {tier.active ? (
-                      <span className="text-[10px] bg-amber-400/20 text-amber-300 px-1.5 py-0.5 rounded font-mono">Current</span>
+                      <span className="text-[10px] bg-purple-400/20 text-purple-300 px-1.5 py-0.5 rounded font-mono font-medium">Current Tier</span>
                     ) : (
-                      <CheckCircle2 className="h-3 w-3 text-zinc-600" />
+                      <span className="text-[10px] font-mono text-zinc-500">{tier.reps}</span>
                     )}
                   </div>
                 ))}
@@ -505,9 +656,9 @@ export default function HomePage() {
             </div>
 
             <div className="mt-6 pt-4 border-t border-white/[0.06]">
-              <h3 className="text-lg font-semibold text-white">Reputation Tiers</h3>
+              <h3 className="text-lg font-semibold text-white">Campus Reps & Badges</h3>
               <p className="text-sm text-zinc-400 mt-1">
-                Progress from Amateur to Legend based on verified student upvotes.
+                Progress from Amateur to Legend by contributing verified solutions and answering help queries.
               </p>
             </div>
           </div>
@@ -515,42 +666,53 @@ export default function HomePage() {
           {/* Card 3: Nationwide Feed (Span 3) */}
           <div className="md:col-span-3 rounded-2xl border border-white/10 bg-zinc-900/50 p-6 sm:p-7 hover:border-white/25 transition group flex flex-col justify-between">
             <div>
-              {/* Network Pulse Header */}
+              {/* Header */}
               <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
                 <div className="flex items-center gap-2">
                   <Globe className="h-4 w-4 text-emerald-400" />
-                  <span className="text-xs font-semibold text-white">All India Student Grid</span>
+                  <span className="text-xs font-semibold text-white">Nationwide Student Grid</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-[11px] text-emerald-400">
-                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span>Live Pulse</span>
-                </div>
+                <span className="text-[10px] rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 font-medium">
+                  Across India
+                </span>
               </div>
 
-              {/* Avatars connection visual */}
-              <div className="mt-5 rounded-xl border border-white/[0.06] bg-zinc-950/70 p-4">
-                <div className="flex items-center justify-around py-2">
-                  {[
-                    { city: "Delhi", col: "IITD", init: "D" },
-                    { city: "Mumbai", col: "IITB", init: "M" },
-                    { city: "Trichy", col: "NITT", init: "T" },
-                    { city: "Chennai", col: "IITM", init: "C" },
-                  ].map((node) => (
-                    <div key={node.city} className="flex flex-col items-center gap-1.5 text-center">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-zinc-800 text-xs font-semibold text-white">
-                        {node.init}
-                      </div>
-                      <span className="text-[10px] text-zinc-400">{node.col}</span>
-                    </div>
-                  ))}
+              {/* Real Cross-Campus Posts */}
+              <div className="mt-4 space-y-2.5">
+                <div className="rounded-xl border border-white/[0.06] bg-zinc-950/70 p-3">
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="font-semibold text-zinc-300">Meera · IIT Madras</span>
+                    <span className="text-zinc-500">1h ago</span>
+                  </div>
+                  <p className="mt-1 text-xs text-zinc-200 font-medium">
+                    Google SWE internship timeline and interview tips
+                  </p>
+                  <div className="mt-2 flex items-center justify-between text-[10px] text-zinc-400">
+                    <span className="rounded bg-purple-500/10 text-purple-300 px-1.5 py-0.5">Career</span>
+                    <span>156 Upvotes · 41 Replies</span>
+                  </div>
                 </div>
 
-                {/* Live tags */}
-                <div className="mt-3 flex flex-wrap gap-1.5 pt-3 border-t border-white/[0.06]">
-                  {["#HackathonTeam", "#OffCampus", "#Research"].map((tag) => (
+                <div className="rounded-xl border border-white/[0.06] bg-zinc-950/70 p-3">
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="font-semibold text-zinc-300">Arjun · BITS Pilani</span>
+                    <span className="text-zinc-500">12m ago</span>
+                  </div>
+                  <p className="mt-1 text-xs text-zinc-200 font-medium">
+                    Smart India Hackathon 2026: 3 spots open for AI team
+                  </p>
+                  <div className="mt-2 flex items-center justify-between text-[10px] text-zinc-400">
+                    <span className="rounded bg-emerald-500/10 text-emerald-300 px-1.5 py-0.5">Events</span>
+                    <span>67 Upvotes · 23 Replies</span>
+                  </div>
+                </div>
+
+                {/* Tags */}
+                <div className="flex items-center gap-1.5 pt-1">
+                  {["#Hackathons", "#Internships", "#Research"].map((tag) => (
                     <span
                       key={tag}
-                      className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/20"
+                      className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-white/[0.03] text-zinc-400 border border-white/[0.06]"
                     >
                       {tag}
                     </span>
@@ -562,53 +724,75 @@ export default function HomePage() {
             <div className="mt-6 pt-4 border-t border-white/[0.06]">
               <h3 className="text-lg font-semibold text-white">Nationwide Feed</h3>
               <p className="text-sm text-zinc-400 mt-1">
-                Collaborate with students across Indian institutions on projects, internships, and research.
+                Collaborate with students across Indian institutions on open-source projects, internships, and research.
               </p>
             </div>
           </div>
 
-          {/* Card 4: Interactive Campus Map (Span 3) */}
+          {/* Card 4: Student Network & Peer Directory (Span 3 - Replaces Map) */}
           <div className="md:col-span-3 rounded-2xl border border-white/10 bg-zinc-900/50 p-6 sm:p-7 hover:border-white/25 transition group flex flex-col justify-between">
             <div>
-              {/* Radar Header */}
+              {/* Network Header */}
               <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
                 <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-violet-400" />
-                  <span className="text-xs font-semibold text-white">Campus Live Radar</span>
+                  <Users className="h-4 w-4 text-accent-bright" />
+                  <span className="text-xs font-semibold text-white">Campus Network</span>
                 </div>
-                <div className="flex items-center gap-1 text-[11px] text-zinc-400">
-                  <Radio className="h-3 w-3 text-violet-400" />
-                  <span>3 Active Zones</span>
-                </div>
+                <span className="text-[10px] rounded bg-white/[0.04] text-zinc-400 border border-white/10 px-2 py-0.5 font-medium">
+                  Peer Directory
+                </span>
               </div>
 
-              {/* Radar Mockup Widget */}
-              <div className="mt-5 rounded-xl border border-white/[0.06] bg-zinc-950/70 p-4">
-                <div className="space-y-2">
-                  {[
-                    { place: "Central Library", count: "142 students", dot: "bg-violet-400" },
-                    { place: "Open Air Theatre (OAT)", count: "89 students", dot: "bg-blue-400" },
-                    { place: "Tech Park Lab", count: "54 students", dot: "bg-emerald-400" },
-                  ].map((loc) => (
-                    <div
-                      key={loc.place}
-                      className="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg bg-white/[0.02] border border-white/[0.04]"
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className={`h-2 w-2 rounded-full ${loc.dot}`} />
-                        <span className="font-medium text-zinc-300">{loc.place}</span>
-                      </div>
-                      <span className="text-[11px] font-mono text-zinc-500">{loc.count}</span>
+              {/* Real Student Peer Cards Mockup */}
+              <div className="mt-4 space-y-2.5">
+                <div className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-zinc-950/70 p-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-zinc-800 text-xs font-bold text-white">
+                      P
                     </div>
-                  ))}
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-semibold text-white">Priya</span>
+                        <span className="rounded bg-cyan-400/10 border border-cyan-400/30 px-1.5 py-0.2 text-[9px] font-medium text-cyan-300">
+                          Contributor (140 Reps)
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-zinc-400">IIT Bombay</span>
+                    </div>
+                  </div>
+                  <span className="inline-flex items-center gap-1 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-300">
+                    <Check className="h-3 w-3" />
+                    <span>Connected</span>
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-zinc-950/70 p-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-zinc-800 text-xs font-bold text-white">
+                      A
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-semibold text-white">Arjun</span>
+                        <span className="rounded bg-purple-400/10 border border-purple-400/30 px-1.5 py-0.2 text-[9px] font-medium text-purple-300">
+                          Expert (620 Reps)
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-zinc-400">Vel Tech</span>
+                    </div>
+                  </div>
+                  <span className="inline-flex items-center gap-1 rounded-lg bg-white px-2.5 py-1 text-[11px] font-semibold text-zinc-950">
+                    <UserPlus className="h-3 w-3" />
+                    <span>Connect</span>
+                  </span>
                 </div>
               </div>
             </div>
 
             <div className="mt-6 pt-4 border-t border-white/[0.06]">
-              <h3 className="text-lg font-semibold text-white">Interactive Campus Map</h3>
+              <h3 className="text-lg font-semibold text-white">Campus Network & Directory</h3>
               <p className="text-sm text-zinc-400 mt-1">
-                Visual zone activity, facility status, and peer density markers across your campus grounds.
+                Discover, connect, and collaborate with verified student peers across Indian universities.
               </p>
             </div>
           </div>
