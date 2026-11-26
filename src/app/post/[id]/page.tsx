@@ -100,6 +100,7 @@ export default async function PostDetailPage({
         postId={postId}
         initialDiscussions={discussionsList}
         currentUserId={session.user.id}
+        isHelpWanted={postData.isHelpWanted}
       />
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import {
@@ -133,6 +133,48 @@ const howItWorksSteps = [
 
 export default function HomePage() {
   const [activeStep, setActiveStep] = useState(0);
+  const [isInView, setIsInView] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const howItWorksRef = useRef<HTMLElement>(null);
+  const pauseTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    const el = howItWorksRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isInView || isPaused) return;
+
+    const interval = setInterval(() => {
+      setActiveStep((prev) => (prev + 1) % howItWorksSteps.length);
+    }, 3200);
+
+    return () => clearInterval(interval);
+  }, [isInView, isPaused]);
+
+  function handleSelectStep(idx: number) {
+    setActiveStep(idx);
+    setIsPaused(true);
+
+    if (pauseTimerRef.current) {
+      clearTimeout(pauseTimerRef.current);
+    }
+
+    pauseTimerRef.current = setTimeout(() => {
+      setIsPaused(false);
+    }, 5000);
+  }
 
   return (
     <div className="bg-[#09090B] text-zinc-100 overflow-hidden">
@@ -348,7 +390,7 @@ export default function HomePage() {
         {/* Asymmetric 2-Row Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
           {/* Card 1: College Hubs (Span 4) */}
-          <div className="md:col-span-4 rounded-2xl border border-white/10 bg-zinc-900/50 p-6 sm:p-7 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] hover:border-white/25 transition group flex flex-col justify-between">
+          <div className="md:col-span-4 rounded-2xl border border-white/10 bg-zinc-900/50 p-6 sm:p-7 hover:border-white/25 transition group flex flex-col justify-between">
             <div>
               {/* Mini UI Header */}
               <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
@@ -425,7 +467,7 @@ export default function HomePage() {
           </div>
 
           {/* Card 2: Reputation Tiers (Span 2) */}
-          <div className="md:col-span-2 rounded-2xl border border-white/10 bg-zinc-900/50 p-6 sm:p-7 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] hover:border-white/25 transition group flex flex-col justify-between">
+          <div className="md:col-span-2 rounded-2xl border border-white/10 bg-zinc-900/50 p-6 sm:p-7 hover:border-white/25 transition group flex flex-col justify-between">
             <div>
               {/* Mini Karma Counter */}
               <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
@@ -471,7 +513,7 @@ export default function HomePage() {
           </div>
 
           {/* Card 3: Nationwide Feed (Span 3) */}
-          <div className="md:col-span-3 rounded-2xl border border-white/10 bg-zinc-900/50 p-6 sm:p-7 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] hover:border-white/25 transition group flex flex-col justify-between">
+          <div className="md:col-span-3 rounded-2xl border border-white/10 bg-zinc-900/50 p-6 sm:p-7 hover:border-white/25 transition group flex flex-col justify-between">
             <div>
               {/* Network Pulse Header */}
               <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
@@ -526,7 +568,7 @@ export default function HomePage() {
           </div>
 
           {/* Card 4: Interactive Campus Map (Span 3) */}
-          <div className="md:col-span-3 rounded-2xl border border-white/10 bg-zinc-900/50 p-6 sm:p-7 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] hover:border-white/25 transition group flex flex-col justify-between">
+          <div className="md:col-span-3 rounded-2xl border border-white/10 bg-zinc-900/50 p-6 sm:p-7 hover:border-white/25 transition group flex flex-col justify-between">
             <div>
               {/* Radar Header */}
               <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
@@ -574,7 +616,7 @@ export default function HomePage() {
       </section>
 
       {/* 4. "How Campify Works" Interactive Tab Showcase */}
-      <section className="py-24 px-6 max-w-6xl mx-auto border-t border-white/[0.06]">
+      <section ref={howItWorksRef} className="py-24 px-6 max-w-6xl mx-auto border-t border-white/[0.06]">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/[0.03] text-xs font-medium text-zinc-400 mb-4">
             <CheckCircle2 className="h-3.5 w-3.5 text-accent-bright" />
@@ -591,31 +633,95 @@ export default function HomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* Step Selector Buttons (5 Cols) */}
           <div className="lg:col-span-5 space-y-3">
-            {howItWorksSteps.map((step, idx) => (
-              <button
-                key={step.id}
-                onClick={() => setActiveStep(idx)}
-                className={`w-full text-left p-5 rounded-2xl border transition-all ${
-                  activeStep === idx
-                    ? "bg-zinc-900/90 border-white/20 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)]"
-                    : "bg-zinc-950/40 border-white/[0.06] hover:border-white/10 hover:bg-zinc-900/40"
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono font-semibold text-accent-bright">
-                    {step.id}
-                  </span>
-                  <span className="text-[11px] text-zinc-500 font-medium">{step.badge}</span>
-                </div>
-                <h4 className="text-base font-semibold text-white mt-1.5">{step.title}</h4>
-                <p className="text-xs text-zinc-400 mt-1 leading-relaxed">{step.subtitle}</p>
-              </button>
-            ))}
+            {howItWorksSteps.map((step, idx) => {
+              const isActive = activeStep === idx;
+              return (
+                <button
+                  key={step.id}
+                  onClick={() => handleSelectStep(idx)}
+                  className={`w-full text-left p-5 rounded-2xl border transition-all ${
+                    isActive
+                      ? "bg-gradient-to-b from-zinc-900/90 via-zinc-900/50 to-zinc-950/90 border-white/20"
+                      : "bg-zinc-950/40 border-white/[0.06] hover:border-white/10 hover:bg-zinc-900/40"
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-mono font-semibold text-accent-bright">
+                          {step.id}
+                        </span>
+                        <span className="text-[11px] text-zinc-500 font-medium">{step.badge}</span>
+                      </div>
+                      <h4 className="text-base font-semibold text-white mt-1.5">{step.title}</h4>
+                      <p className="text-xs text-zinc-400 mt-1 leading-relaxed">{step.subtitle}</p>
+                    </div>
+
+                    {/* Circular Progress Loader on Right Center */}
+                    <div className="shrink-0 flex items-center justify-center pl-2">
+                      {isActive ? (
+                        <div className="relative flex h-6 w-6 items-center justify-center">
+                          <svg className="h-6 w-6 -rotate-90" viewBox="0 0 24 24">
+                            <circle
+                              cx="12"
+                              cy="12"
+                              r="9"
+                              stroke="rgba(255,255,255,0.08)"
+                              strokeWidth="2.5"
+                              fill="none"
+                            />
+                            {isInView && !isPaused ? (
+                              <motion.circle
+                                key={`circle-${idx}-${activeStep}`}
+                                cx="12"
+                                cy="12"
+                                r="9"
+                                stroke="currentColor"
+                                strokeWidth="2.5"
+                                strokeDasharray="56.5"
+                                initial={{ strokeDashoffset: 56.5 }}
+                                animate={{ strokeDashoffset: 0 }}
+                                transition={{ duration: 3.2, ease: "linear" }}
+                                fill="none"
+                                className="text-accent-bright"
+                              />
+                            ) : (
+                              <circle
+                                cx="12"
+                                cy="12"
+                                r="9"
+                                stroke="currentColor"
+                                strokeWidth="2.5"
+                                fill="none"
+                                className="text-accent-bright"
+                              />
+                            )}
+                          </svg>
+                          <span className="absolute h-1.5 w-1.5 rounded-full bg-accent-bright" />
+                        </div>
+                      ) : (
+                        <div className="h-6 w-6 flex items-center justify-center">
+                          <div className="h-2 w-2 rounded-full bg-white/10" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
           </div>
 
           {/* Animated Preview Panel (7 Cols) */}
           <div className="lg:col-span-7">
-            <div className="relative rounded-2xl border border-white/10 bg-zinc-900/70 p-6 sm:p-8 shadow-2xl backdrop-blur-xl min-h-[340px] flex flex-col justify-center">
+            <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-zinc-900/85 via-zinc-900/45 to-zinc-950/90 p-6 sm:p-8 shadow-2xl backdrop-blur-xl min-h-[340px] flex flex-col justify-center">
+              {/* Radial Top Spotlight Glow */}
+              <div
+                className="pointer-events-none absolute inset-0 rounded-2xl"
+                style={{
+                  background:
+                    "radial-gradient(circle at 50% 0%, rgba(120, 119, 198, 0.22), transparent 70%)",
+                }}
+              />
               <AnimatePresence mode="wait">
                 {activeStep === 0 && (
                   <motion.div
