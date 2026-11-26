@@ -1,255 +1,298 @@
 # Campify
 
-Campify is a high-performance, full-stack campus network platform engineered for authentic student communication, peer validation, and inter-college collaboration. Built with Next.js 15, React 19, TypeScript, Drizzle ORM, and Neon Serverless PostgreSQL.
+The next-generation campus network platform engineered for authentic university communication, verified local student feeds, inter-college collaboration, and peer reputation tracking.
+
+[![Next.js](https://img.shields.io/badge/Framework-Next.js_15-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/Library-React_19-20232A?style=flat-square&logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/Language-TypeScript_5.7-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![Database](https://img.shields.io/badge/Database-Neon_PostgreSQL-00E599?style=flat-square&logo=postgresql)](https://neon.tech/)
+[![ORM](https://img.shields.io/badge/ORM-Drizzle-C5F74F?style=flat-square&logo=drizzle)](https://orm.drizzle.team/)
+[![Auth](https://img.shields.io/badge/Auth-NextAuth_v5-purple?style=flat-square)](https://authjs.dev/)
+[![Styling](https://img.shields.io/badge/Styling-Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](./LICENSE)
 
 ---
 
-## 1. System Architecture
+## What is Campify?
 
-Campify is architected on a modern serverless stack that separates client rendering, edge authentication, server action mutations, and relational persistence.
+Most university communities suffer from fragmented communication spread across unverified WhatsApp groups, informal Telegram channels, and chaotic forums. Important academic notices, hostel updates, and exam discussions get buried under noise, while opportunities to find teammates across Indian colleges for hackathons, research, and internships are virtually non-existent.
+
+**Campify** solves this by establishing a structured, two-tier platform:
+1. **Verified Campus Hubs**: Restricted, authenticated feeds scoped strictly to your university for day-to-day notices, mess menus, lost-and-found queries, and course discussions.
+2. **Nationwide Student Grid**: An open exchange connecting students across premier Indian institutions (IITs, NITs, BITS, Anna University, Vel Tech, and more) to form hackathon teams, share referral links, and exchange research ideas.
+3. **Campus Reps**: An honest, point-based reputation and achievement badge engine that recognizes students who actively help peers with verified solutions.
+
+---
+
+## Key Features
+
+### 1. Campus Feed Isolation
+Discussions published under `My College` are strictly isolated at the database query level using the author's verified university ID. Students from other colleges cannot view or leak into your local university notices.
+
+### 2. Nationwide Collaboration Grid
+Switch to the `Across India` feed with one click to collaborate with students nationwide on cross-institutional research, project building, and off-campus internships.
+
+### 3. Campus Reps and Tier Badges
+Points are computed deterministically from real database activity:
+- Upvotes received on discussions: +10 Reps
+- Constructive replies authored: +5 Reps
+- Original discussions published: +5 Reps
+- Helpful solution recognition: +25 Reps
+
+Tier Progression:
+- **Amateur** (0 to 99 Reps): Slate emblem
+- **Contributor** (100 to 499 Reps): Sapphire Cyan emblem
+- **Expert** (500 to 1,499 Reps): Vivid Violet emblem
+- **Legend** (1,500+ Reps): Radiant Amber Gold emblem
+
+### 4. Help Wanted and Helpful Answers
+Discussions marked with the Help Wanted tag allow readers and the author to mark constructive replies as helpful, instantly awarding bonus reputation to the student who helped.
+
+### 5. Campus Network and Peer Directory
+Search students across institutions by username, college, or bio keywords. Send connection requests and manage incoming alerts in a dedicated Notifications center.
+
+### 6. Auto-Linkify Engine
+External URLs pasted in bios, discussion bodies, or comments are automatically detected and converted into safe external links that open in a separate tab.
+
+---
+
+## Application Workflow and Architecture
+
+The diagram below illustrates how a user request flows through authentication, route protection, database queries, and client reconciliation:
 
 ```mermaid
 flowchart TD
-    subgraph ClientTier ["Client Tier (Browser)"]
-        UI["React 19 Server & Client Components"]
-        Optimistic["Optimistic State Reconciliation"]
-    end
-
-    subgraph EdgeTier ["Edge & Middleware Tier"]
-        Middleware["Edge Middleware (src/middleware.ts)"]
-        SessionStore["JWT Session Validation (NextAuth v5)"]
-    end
-
-    subgraph AppTier ["Next.js App Router (Serverless Node.js)"]
-        Routes["Server Rendered Route Handlers"]
-        Actions["Type-Safe Server Actions (Zod Validation)"]
-        RepEngine["Deterministic Rep Engine (src/utils/reps.ts)"]
-    end
-
-    subgraph DataTier ["Data Access & Persistence"]
-        Drizzle["Drizzle ORM Layer"]
-        Neon["Neon Serverless PostgreSQL (Pooled over WebSockets)"]
-    end
-
-    UI -->|"Requests / Navigation"| Middleware
-    Middleware -->|"Route Guard"| SessionStore
-    SessionStore -->|"Authorized Context"| Routes
-    UI -->|"Form Mutations & Upvotes"| Actions
-    Actions -->|"Input Sanitization"| RepEngine
-    RepEngine -->|"Type-Safe Queries"| Drizzle
-    Routes -->|"Relational Queries"| Drizzle
-    Drizzle -->|"Parameterized SQL"| Neon
-    Optimistic -.->|"Instant Perceived Response"| UI
+    A["Student visits Campify"] --> B{"Authenticated Session?"}
+    
+    B -->|"No"| C["Browse Public Landing Page (/)]"]
+    C --> D["Sign Up / Login (/signup, /login)"]
+    D --> E["Select Verified University (/select-college)"]
+    E --> F["Session Token Issued (NextAuth v5 JWT)"]
+    
+    B -->|"Yes"| G["Edge Middleware (src/middleware.ts)"]
+    F --> G
+    
+    G --> H{"Target Destination"}
+    
+    H -->|"Campus Discussions"| I["/feed (Scoped Query)"]
+    I --> J{"Feed Scope Selected"}
+    J -->|"My College"| K["Query DB: posts WHERE college_id = user.college_id"]
+    J -->|"Across India"| L["Query DB: posts WHERE scope = 'across_india'"]
+    
+    H -->|"Publish Discussion"| M["createPost Server Action"]
+    M --> N["Zod Validation & Neon DB Insert"]
+    N --> O["Revalidate Cache & Optimistic Render"]
+    
+    H -->|"Peer Discovery"| P["/search (Student Network)"]
+    P --> Q["Query: users JOIN colleges JOIN rep calculations"]
+    Q --> R["Send Connection Request -> connections table"]
+    
+    H -->|"Alerts & Invites"| S["/notifications Center"]
+    S --> T["Accept / Decline Request Action"]
+    
+    H -->|"Profile & Reputation"| U["/profile Dashboard"]
+    U --> V["Calculate Total Reps -> Assign Tier Badge"]
 ```
 
 ---
 
-## 2. Database Entity-Relationship Model
+## Database Architecture
 
-The persistence layer enforces strict relational integrity, composite unique constraints, and foreign key cascades to ensure data consistency across campus activities.
+Campify uses a normalized relational schema on Neon Serverless PostgreSQL, managed with type-safe Drizzle ORM.
 
 ```mermaid
 erDiagram
-    colleges ||--o{ users : "enrolls"
+    colleges ||--o{ users : "houses"
     colleges ||--o{ posts : "scopes"
     users ||--o{ posts : "authors"
     users ||--o{ discussions : "writes"
     users ||--o{ post_upvotes : "casts"
-    users ||--o{ connections : "sends"
+    users ||--o{ connections : "initiates"
     users ||--o{ connections : "receives"
     posts ||--o{ discussions : "contains"
     posts ||--o{ post_upvotes : "tallies"
 
     colleges {
-        uuid id PK
-        text name "UNIQUE"
-        text city
-        text state
-        timestamp created_at
+        uuid id PK "Primary Key"
+        text name "Unique official college name"
+        text city "Campus location city"
+        text state "Campus location state"
+        timestamp created_at "Registration timestamp"
     }
 
     users {
-        uuid id PK
-        text email "UNIQUE"
-        text username "UNIQUE"
-        text password_hash
-        text bio
-        text avatar_url
-        uuid college_id FK
-        timestamp created_at
-        timestamp updated_at
+        uuid id PK "Primary Key"
+        text email "Unique student email"
+        text username "Unique display handle"
+        text password_hash "Bcrypt salted hash"
+        text bio "Student profile description"
+        text avatar_url "Profile avatar path"
+        uuid college_id FK "References colleges.id"
+        timestamp created_at "Account creation date"
+        timestamp updated_at "Profile last modified"
     }
 
     posts {
-        uuid id PK
-        text title
-        text body
-        text category
-        text scope "my_college | across_india"
-        boolean is_help_wanted
-        integer upvote_count
-        integer discussion_count
-        text media_url
-        uuid author_id FK
-        uuid college_id FK
-        timestamp created_at
-        timestamp updated_at
+        uuid id PK "Primary Key"
+        text title "Discussion headline"
+        text body "Full content description"
+        text category "Academics, Hostel, Events, Career, Help"
+        text scope "my_college or across_india"
+        boolean is_help_wanted "Help wanted indicator"
+        integer upvote_count "Cached aggregate counter"
+        integer discussion_count "Cached comment counter"
+        uuid author_id FK "References users.id (Cascade)"
+        uuid college_id FK "References colleges.id (Cascade)"
+        timestamp created_at "Published timestamp"
+        timestamp updated_at "Last updated timestamp"
     }
 
     post_upvotes {
-        uuid id PK
-        uuid user_id FK
-        uuid post_id FK
-        timestamp created_at
+        uuid id PK "Primary Key"
+        uuid user_id FK "References users.id (Cascade)"
+        uuid post_id FK "References posts.id (Cascade)"
+        timestamp created_at "Timestamp of upvote"
     }
 
     discussions {
-        uuid id PK
-        text body
-        uuid post_id FK
-        uuid author_id FK
-        timestamp created_at
+        uuid id PK "Primary Key"
+        text body "Reply content"
+        uuid post_id FK "References posts.id (Cascade)"
+        uuid author_id FK "References users.id (Cascade)"
+        timestamp created_at "Timestamp of reply"
     }
 
     connections {
-        uuid id PK
-        uuid from_user_id FK
-        uuid to_user_id FK
-        text status "pending | accepted | rejected"
-        timestamp created_at
-        timestamp updated_at
+        uuid id PK "Primary Key"
+        uuid from_user_id FK "Requester student (Cascade)"
+        uuid to_user_id FK "Recipient student (Cascade)"
+        text status "pending, accepted, rejected"
+        timestamp created_at "Request timestamp"
+        timestamp updated_at "Response timestamp"
     }
 ```
 
-### Relational Constraints
-- **post_upvotes**: Enforces a composite unique index on `(user_id, post_id)` to prevent duplicate voting attacks.
-- **connections**: Enforces a composite unique index on `(from_user_id, to_user_id)` to prevent duplicate request spam.
-- **posts**: Scoped by `college_id` and indexed on `(college_id, scope)` for high-throughput isolation filtering.
-- **Cascades**: User deletions cascade to author posts, replies, and votes; college deletions set user references to null.
+### Relational Integrity and Indexes
+- **Unique Vote Guard**: Composite index `uniqueIndex("user_post_unique_idx").on(userId, postId)` guarantees a student can never upvote a post more than once.
+- **Unique Connection Guard**: Composite index `uniqueIndex("connection_pair_unique_idx").on(fromUserId, toUserId)` prevents duplicate connection requests.
+- **Query Acceleration**: B-tree indices on `(college_id, scope)` and `(author_id)` accelerate high-frequency feed queries and profile aggregations.
 
 ---
 
-## 3. Core Functional Specifications
+## Tech Stack
 
-### Campus Domain Isolation
-- Discussions created with the `my_college` scope are isolated at the database level. Students only access local campus content for their assigned university.
-- Discussions marked `across_india` surface on the Nationwide Grid for inter-institution collaboration, hackathons, and internship opportunities.
-
-### Campus Reputation Engine (Reps)
-A deterministic point calculation engine replaces arbitrary rating systems:
-- Upvotes received on user posts: +10 Reps each
-- Constructive replies authored: +5 Reps each
-- Original discussions published: +5 Reps each
-- Helpful answer recognition: +25 Reps
-
-#### Tier Hierarchy
-1. **Amateur**: 0 to 99 Reps (Slate Zinc)
-2. **Contributor**: 100 to 499 Reps (Sapphire Cyan)
-3. **Expert**: 500 to 1,499 Reps (Vivid Violet)
-4. **Legend**: 1,500+ Reps (Radiant Amber)
-
-### Peer Network & Connection Directory
-- Full-text search across verified students, colleges, skills, and bios.
-- Bidirectional request, accept, and decline connection pipeline.
-- Real-time pending connection alert counters in global navigation.
-
-### Auto-Linkification
-- Client parser scans post bodies, comments, and student bios for external URLs.
-- Sanitizes and converts URLs into clickable anchors with `target="_blank"` and `rel="noopener noreferrer"` attributes.
+| Category | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Framework** | Next.js 15 (App Router) | Server-side rendering, streaming, Server Actions, edge routing |
+| **Library** | React 19 | Modern component architecture, optimistic hooks, useTransition |
+| **Language** | TypeScript 5.7 | Strict static type safety across schemas, actions, and UI |
+| **Database** | Neon PostgreSQL | Serverless relational persistence with connection pooling |
+| **ORM** | Drizzle ORM | Type-safe SQL query builder and schema migration manager |
+| **Auth** | NextAuth.js v5 (Auth.js) | Session management with JWTs and edge route protection |
+| **Styling** | Tailwind CSS | Custom obsidian dark design tokens and responsive layouts |
+| **Validation** | Zod | Runtime input parsing and sanitization for Server Actions |
+| **Icons** | Lucide React | Consistent vector iconography |
+| **Animations**| Framer Motion | Smooth viewport-aware transitions and loaders |
 
 ---
 
-## 4. Technology Stack
+## Local Development and Setup Guide
 
-- **Framework**: Next.js 15 (App Router, React 19)
-- **Language**: TypeScript 5.7 (Strict Type Checking)
-- **Database**: Neon Serverless PostgreSQL
-- **ORM**: Drizzle ORM
-- **Authentication**: NextAuth.js v5 (Auth.js) with bcryptjs
-- **Styling**: Tailwind CSS (Obsidian Dark Design System)
-- **Validation**: Zod
-- **Icons**: Lucide React
-- **Animations**: Framer Motion
+Follow these steps to clone, configure, and run Campify locally:
 
----
+### 1. Prerequisites
+- Node.js 18.18.0 or higher
+- Git
+- Free Neon PostgreSQL database instance (neon.tech)
 
-## 5. Security Posture
+### 2. Clone the Repository
+```bash
+git clone https://github.com/vasanth642/Campify.git
+cd Campify
+```
 
-- **HTTP Headers**: Enforced via `next.config.ts`:
-  - `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
-  - `X-Frame-Options: DENY` (Anti-clickjacking)
-  - `X-Content-Type-Options: nosniff` (Anti-MIME sniffing)
-  - `Referrer-Policy: strict-origin-when-cross-origin`
-  - `Permissions-Policy: camera=(), microphone=(), geolocation=()`
-- **Password Hashing**: Bcrypt salt-hashed with 10 rounds before write operations.
-- **Route Guards**: Next.js edge middleware intercepts all protected endpoints (`/feed`, `/post/*`, `/profile/*`, `/search`, `/notifications`).
+### 3. Install Dependencies
+```bash
+npm install
+```
 
----
-
-## 6. Local Setup and Development
-
-### Prerequisites
-- Node.js 18.18 or higher
-- Neon PostgreSQL database instance
-
-### Environment Variables
+### 4. Configure Environment Variables
 Create a `.env.local` file in the root directory:
-
 ```env
-DATABASE_URL="postgresql://user:password@endpoint.neon.tech/neondb?sslmode=require"
-AUTH_SECRET="your-generated-32-byte-secret"
+DATABASE_URL="postgresql://username:password@ep-your-database.neon.tech/neondb?sslmode=require"
+AUTH_SECRET="generate-a-32-byte-secret-using-openssl-rand-hex-32"
 NEXTAUTH_URL="http://localhost:3000"
 ```
 
-### Installation and Bootstrapping
+To generate a secure `AUTH_SECRET`, you can run:
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
 
-1. Install project dependencies:
-   ```bash
-   npm install
-   ```
+### 5. Push Schema to Database
+Synchronize the Drizzle schema with your Neon PostgreSQL instance:
+```bash
+npm run db:push
+```
 
-2. Push schema definitions to your Neon PostgreSQL instance:
-   ```bash
-   npm run db:push
-   ```
+### 6. Seed Baseline Data
+Populate verified Indian colleges (NIT Trichy, IIT Bombay, Vel Tech, BITS Pilani, etc.) and initial demo discussions:
+```bash
+npm run db:seed
+```
 
-3. Seed initial colleges and baseline demo data:
-   ```bash
-   npm run db:seed
-   ```
+### 7. Start the Development Server
+```bash
+npm run dev
+```
 
-4. Start the local development server:
-   ```bash
-   npm run dev
-   ```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-5. Run TypeScript verification:
-   ```bash
-   npm run typecheck
-   ```
-
-6. Run the production build verification:
-   ```bash
-   npm run build
-   ```
+### 8. Production Build Verification
+To verify type safety and produce the optimized production bundle:
+```bash
+npm run typecheck
+npm run build
+```
 
 ---
 
-## 7. Project Structure
+## Contributing to Campify
 
-```
-├── src/
-│   ├── actions/          # Type-safe Next.js Server Actions (auth, posts, connections)
-│   ├── app/              # Next.js App Router (feed, profile, search, notifications)
-│   ├── components/       # Reusable UI components (badges, feed, layout)
-│   ├── constants/        # Application constants and categories
-│   ├── db/               # Drizzle schema, client instance, and seed scripts
-│   ├── lib/              # Auth.js configuration, utilities
-│   ├── types/            # TypeScript type declarations
-│   └── utils/            # Reps calculation and linkify parsers
-├── public/               # Static assets
-├── drizzle.config.ts     # Drizzle Kit migration configuration
-├── next.config.ts        # Next.js configuration and security headers
-├── tailwind.config.ts    # Tailwind CSS obsidian design tokens
-└── tsconfig.json         # Strict TypeScript compiler options
-```
+Contributions are what make the open-source developer community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
+
+1. Fork the Project
+2. Create your Feature Branch:
+   ```bash
+   git checkout -b feat/amazing-feature
+   ```
+3. Commit your Changes:
+   ```bash
+   git commit -m "feat: add some amazing feature"
+   ```
+4. Push to the Branch:
+   ```bash
+   git push origin feat/amazing-feature
+   ```
+5. Open a Pull Request on GitHub
+
+---
+
+## License
+
+Distributed under the MIT License. See [LICENSE](./LICENSE) for more information.
+
+---
+
+## Developed By
+
+Built by **vasanth642**  
+GitHub: [@vasanth642](https://github.com/vasanth642)
+
+---
+
+## Support the Project
+
+If this project helped you understand modern full-stack web architecture with Next.js 15, Drizzle ORM, and Neon PostgreSQL, please consider giving it a star on GitHub. It helps others discover the repository.
+
+Star this repository on GitHub
