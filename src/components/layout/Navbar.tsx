@@ -1,9 +1,13 @@
 import Link from "next/link";
-import { MessageCircle, Search, MapPin, Zap, LogOut, User } from "lucide-react";
+import { MessageCircle, Users, Zap, LogOut, Bell } from "lucide-react";
 import { auth, signOut } from "@/lib/auth";
+import { getPendingRequestsCount } from "@/actions/connections";
 
 export async function Navbar() {
   const session = await auth();
+  const pendingCount = session?.user?.id
+    ? await getPendingRequestsCount(session.user.id)
+    : 0;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/[0.06] bg-zinc-950/70 backdrop-blur-md">
@@ -18,9 +22,8 @@ export async function Navbar() {
 
           <nav className="hidden items-center gap-1 md:flex">
             {[
-              { href: "/feed", label: "Feed", icon: MessageCircle },
-              { href: "/search", label: "Explore", icon: Search },
-              { href: "/map", label: "Map", icon: MapPin },
+              { href: "/feed", label: "Discussions", icon: MessageCircle },
+              { href: "/search", label: "Campus Network", icon: Users },
             ].map((item) => (
               <Link
                 key={item.href}
@@ -43,6 +46,20 @@ export async function Navbar() {
                   <span className="max-w-[140px] truncate">{session.user.collegeName}</span>
                 </span>
               )}
+
+              <Link
+                href="/notifications"
+                className="relative flex items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.02] p-2 text-zinc-400 transition-colors hover:border-white/20 hover:text-white"
+                title="Notifications & Requests"
+              >
+                <Bell className="h-3.5 w-3.5" />
+                {pendingCount > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white shadow-sm">
+                    {pendingCount}
+                  </span>
+                )}
+              </Link>
+
               <Link
                 href="/profile"
                 className="flex items-center gap-1.5 rounded-full border border-white/10 bg-zinc-900 px-3 py-1 text-[13px] font-medium text-white transition-colors hover:border-white/20"

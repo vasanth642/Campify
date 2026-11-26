@@ -13,6 +13,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { toggleUpvote, deletePost } from "@/actions/posts";
+import { linkify } from "@/utils/linkify";
 
 export type PostItem = {
   id: string;
@@ -114,7 +115,7 @@ export default function PostCard({
   }
 
   return (
-    <article className="group rounded-2xl border border-white/10 bg-zinc-900/50 p-5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] transition-all hover:border-white/20 hover:bg-zinc-900/70">
+    <article className="group rounded-2xl border border-white/[0.08] bg-gradient-to-b from-zinc-900/80 via-zinc-900/40 to-zinc-950/80 p-5 backdrop-blur-sm transition-all duration-200 hover:border-white/20 hover:from-zinc-900/95 hover:via-zinc-900/55 hover:to-zinc-950 hover:shadow-[0_8px_30px_rgb(0,0,0,0.35)]">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-xs font-semibold text-zinc-300 border border-white/10">
@@ -186,7 +187,7 @@ export default function PostCard({
             isDetailView ? "whitespace-pre-wrap" : "line-clamp-3"
           }`}
         >
-          {post.body}
+          {linkify(post.body)}
         </p>
       </div>
 
